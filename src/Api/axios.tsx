@@ -1,14 +1,12 @@
 // api.ts
 import axios, { AxiosInstance } from 'axios';
 
-const token = localStorage.getItem('token');
 
 const api: AxiosInstance = axios.create({
-  baseURL: `https://localhost:7256`,
+  baseURL: `http://127.0.0.1:8000/api`,
   headers: {
     'Access-Control-Allow-Origin': '*',
     Accept: '*/*',
-    Authorization: `Bearer ${token}`
   }
 });
 
@@ -36,11 +34,10 @@ api.interceptors.response.use(
 
 // 2º versão
 export const apiImagem: AxiosInstance = axios.create({
-  baseURL: `https://localhost:7256`,
+  baseURL: `http://127.0.0.1:8000/api`,
   headers: {
     'Content-Type': 'multipart/form-data',
     Accept: '*/*',
-    Authorization: `Bearer ${token}`
   },
 });
 

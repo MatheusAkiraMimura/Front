@@ -55,8 +55,7 @@ const Contato = () => {
 
               <Text><b>Idade:</b> 22 anos</Text>
               <Text><b>Localização:</b> São Paulo, Brasil</Text>
-              <Text><b>Descrição:</b> um profissional de Tecnologia da Informação formado pela Fatec Barueri, com conhecimentos no Frontend, Backend, bancos de dados e metodologias ágeis.</Text>
-              {/* Aqui você pode adicionar mais informações ou uma breve biografia */}
+              <Text><b>Descrição:</b> Um profissional em gestão da Tecnologia da Informação formado pela Fatec Barueri, com conhecimentos no Frontend, Backend, bancos de dados e metodologias ágeis.</Text>
               <Stack spacing={3} mt={3}>
                 <Flex alignItems="center">
                   <Icon as={FaEnvelope} mr={2} />
@@ -80,7 +79,6 @@ const Contato = () => {
           </Flex>
         </Box>
 
-        {/* Seção do Formulário de Contato */}
         <Box flex="1" ml={{ base: "", md: "3rem" }}>
           <form onSubmit={handleSubmit}>
             <FormControl id="name" mb={3} mt={5}>

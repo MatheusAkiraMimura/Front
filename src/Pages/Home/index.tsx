@@ -18,12 +18,12 @@ const Home = () => {
   return (
     <MasterPage paginaAtual="home" setShowModal={setShowModal} showModal={showModal}>
       <Flex w="100%" justifyContent="center">
-        <Flex direction={{ base: 'column', md: 'row' }} align="center" justify="space-between" py={10} px={5} maxW="100rem" minH="70vh">
-          <Box flex="1">
-            <Image src={profileImage} borderRadius="full" boxSize="450px" />
+        <Flex direction={{ base: 'column', lg: 'row' }} align="center" justify="space-around" py={10} px={5} maxW="100rem" minH="70vh">
+          <Box flex="1" marginRight="1rem">
+            <Image src={profileImage} borderRadius="full" boxSize="26rem" marginBottom="1rem" />
           </Box>
 
-          <Box flex="1">
+          <Box flex="2">
             <Heading as="h1" size="2xl" mb={4}>Desenvolvedor Full-Stack</Heading>
             <Text fontSize="lg" mb={4}>
               Graduado no ano de 2022, tenho mais de 2 anos de experiência profissional como desenvolvedor Full-Stack, tendo como aptidões comunicação, organização, rápido aprendizado e dedicação.

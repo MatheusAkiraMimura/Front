@@ -37,39 +37,6 @@ export interface IRetornoBotaoSenha {
 }
 
 
-// CRUD
-export interface IDadosAPICrud {
-    id: number;
-    nome: string;
-    email: string;
-    senha: string;
-    dataCampo: string;
-    celular: string;
-    classificacao: string;
-    observacao: string;
-    conhecimentos: string;
-    nivel: string;
-    userId: number;
+export interface SetFunction<T> {
+    (value: T): void;
 }
-
-export interface DadosTabelaFormatadosAPICrud {
-    id: { dados: number };
-    nome: { dados: string };
-    email: { dados: string };
-    senha: {
-        id: number,
-        idUser: number,
-        page: string,
-    }
-    dataCampo: { dados: string };
-    celular: { dados: string };
-    classificacao: { dados: string };
-    observacao: { dados: string };
-    conhecimentos: { dados: string };
-    nivel: { dados: string };
-    userId: { dados: number };
-    botoesAlterarDeletar: {
-        id: number,
-    }
-}
-
