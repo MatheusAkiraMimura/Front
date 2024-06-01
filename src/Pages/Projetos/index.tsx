@@ -1,15 +1,6 @@
 import React, { useState } from "react";
 import {
   Flex,
-  Heading,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Button,
   useColorModeValue,
   Box,
 } from "@chakra-ui/react";
@@ -70,15 +61,10 @@ const ProjectPage = () => {
   });
 
   const navigate = useNavigate();
-  const [showModalAcesso, setShowModalAcesso] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const clicarSaibaMais = (path: any) => {
     navigate(path);
-  };
-
-  const redirect = (rota: any) => {
-    navigate(`/${rota}`);
   };
 
   const handleDifficultySelect = (selectedDifficulty: any) => {

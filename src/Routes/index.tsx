@@ -7,12 +7,20 @@ import MemoryGame from "../Pages/Projetos/Jogos/MemoryGame";
 import ProjetoCRUD from "../Pages/Projetos/CRUD";
 import { CRUDProvider } from "../Pages/Projetos/CRUD/Contexto";
 import { ContatoProvider } from "../Pages/Contato/Contexto";
+import { HomeProvider } from "../Pages/Home/Context";
 
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <HomeProvider>
+              <Home />
+            </HomeProvider>
+          }
+        />
 
         <Route
           path="/contato"

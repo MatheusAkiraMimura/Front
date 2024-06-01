@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
-import { Box, Text, Flex, Icon, Heading, useColorMode } from '@chakra-ui/react';
+import { FunctionComponent, createContext, useState } from "react";
+
+import { NavigateFunction, useNavigate } from "react-router-dom";
+
+// Chakra UI components
+import { useToast, UseToastOptions, ToastId, Box, useColorModeValue, Flex, Heading, Image, Text, Button, Icon, useColorMode } from "@chakra-ui/react";
+import { SetFunction } from "../../../Interfaces";
+
+import profileImage from '../Assets/foto.png';
 import { FaReact, FaBootstrap, FaPhp, FaDatabase, FaGitAlt, FaCode, FaJava, FaCloud, FaHtml5, FaCss3Alt, FaLaptopCode, FaLock, FaSitemap, FaChevronUp, FaChevronDown, FaMinus, FaPlus } from 'react-icons/fa';
-import { GiAbstract050 } from 'react-icons/gi';
-import { SiJavascript } from 'react-icons/si';
+import { SiJavascript } from "react-icons/si";
+import { GiAbstract050 } from "react-icons/gi";
+
+//#region Interfaces
+interface IInformacoesAkira {}
+
+interface IMeusConhecimentos {}
 
 type CategoryTypes = 'Frontend' | 'Backend' | 'Banco de Dados' | 'Outros';
 
@@ -39,8 +51,94 @@ interface ISkillCategoryProps {
     isExpanded: boolean;
     toggleCategory: (category: CategoryTypes) => void;
 }
+//#endregion
 
-const SkillCard: React.FC<ISkillCardProps> = ({ title, icon, description, bgColor }) => {
+//#region types
+type BuscarDadosHomeByUser = (
+  id: any,
+  setForms: SetFunction<any>,
+  setIsFormModalOpen: SetFunction<boolean>
+) => Promise<void>;
+
+//#endregion types
+
+//#region interface de Context type
+interface HomeContextType {
+  navigate: NavigateFunction;
+
+  toast: (options?: UseToastOptions) => ToastId;
+
+  savedIdentifier: string | null;
+
+  isLoading: boolean;
+  setIsLoading: SetFunction<boolean>;
+
+  InformacoesAkira: FunctionComponent<IInformacoesAkira>;
+  MeusConhecimentos: FunctionComponent<IMeusConhecimentos>;
+}
+//#endregion interface de Context type
+
+export const HomeContext = createContext<HomeContextType | null>(null);
+
+export const HomeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  //#region do navigate
+  const navigate = useNavigate();
+  //#endregion
+
+  //#region do useToast
+  const toast = useToast();
+  //#endregion
+
+  //#region do Auth
+  const savedIdentifier = localStorage.getItem("userIdentifier");
+  //#endregion
+
+  //#region de modal de loading
+  const [isLoading, setIsLoading] = useState(false);
+  //#endregion
+
+  //#region JSONs
+  //#endregion
+
+  //#region Tratamentos
+  //#endregion
+
+  //#region funções da index de Contato
+  const redirectToProjetos = () => {
+    navigate("/projetos");
+  };
+
+  //#endregion
+
+  //#region ParcialView
+  const InformacoesAkira: React.FC<IInformacoesAkira> = ({}) => {
+    return (
+      <Flex w="100%" justifyContent="center">
+        <Flex direction={{ base: 'column', lg: 'row' }} align="center" justify="space-around" py={10} px={5} maxW="100rem" minH="70vh">
+          <Box flex="1" marginRight="1rem">
+            <Image src={profileImage} borderRadius="full" boxSize="26rem" marginBottom="1rem" />
+          </Box>
+
+          <Box flex="2">
+            <Heading as="h1" size="2xl" mb={4}>Desenvolvedor Full-Stack</Heading>
+            <Text fontSize="lg" mb={4}>
+              Graduado no ano de 2022, tenho mais de 2 anos de experiência profissional como desenvolvedor Full-Stack, tendo como aptidões comunicação, organização, rápido aprendizado e dedicação.
+            </Text>
+
+            <Text fontSize="lg" mb={4}>
+              Atualmente estou trabalhando com .NET e C# no backend, banco de dados SQLServer, ORM sendo o Entitie Framwork e no frontend React, Typescript e bootstrap.
+            </Text>
+            <Button colorScheme="purple" mr={3} onClick={redirectToProjetos}>Meus Projetos </Button>
+            <Button colorScheme="gray" variant="outline">Currículo</Button>
+          </Box>
+        </Flex>
+      </Flex>
+    );
+  };
+
+  const SkillCard: React.FC<ISkillCardProps> = ({ title, icon, description, bgColor }) => {
     return (
         <Box p={4} shadow="md" borderWidth="1px" borderRadius="md" bg={bgColor} textAlign="center" w="100%" maxW="18rem">
             <Icon as={icon} w={10} h={10} mb={3} />
@@ -85,9 +183,7 @@ const SkillCategory: React.FC<ISkillCategoryProps> = ({ title, skills, bgColor, 
     );
 };
 
-
-
-const Skills: React.FC = () => {
+const MeusConhecimentos: React.FC<IMeusConhecimentos> = () => {
     const { colorMode } = useColorMode();
 
     const [expandedCategories, setExpandedCategories] = useState<CategoryTypes[]>(["Frontend"]);
@@ -251,7 +347,6 @@ const Skills: React.FC = () => {
         "Outros": { bgColor: "gray.400", bgColorCategoria: "gray.600" }
     };
 
-
     return (
         <Box w="100%" maxW="100rem" m="0 auto">
             <Heading as="h1" textAlign="center" fontSize={{ base: '1.8rem', md: "2rem", lg: '3rem' }} pb={4}>Meus conhecimentos</Heading>
@@ -280,4 +375,26 @@ const Skills: React.FC = () => {
     );
 };
 
-export default Skills;
+  //#endregion
+
+  return (
+    <HomeContext.Provider
+      value={{
+        navigate,
+
+        toast,
+
+        savedIdentifier,
+
+        isLoading,
+        setIsLoading,
+
+        InformacoesAkira,
+        MeusConhecimentos,
+      }}
+    >
+      {children}
+    </HomeContext.Provider>
+  );
+};
+/* Fim do Contexto */
