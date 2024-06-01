@@ -6,6 +6,7 @@ import Projetos from "../Pages/Projetos";
 import MemoryGame from "../Pages/Projetos/Jogos/MemoryGame";
 import ProjetoCRUD from "../Pages/Projetos/CRUD";
 import { CRUDProvider } from "../Pages/Projetos/CRUD/Contexto";
+import { ContatoProvider } from "../Pages/Contato/Contexto";
 
 const AppRoutes = () => {
   return (
@@ -13,7 +14,14 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
 
-        <Route path="/contato" element={<Contato />} />
+        <Route
+          path="/contato"
+          element={
+            <ContatoProvider>
+              <Contato />
+            </ContatoProvider>
+          }
+        />
 
         <Route path="/projetos" element={<Projetos />} />
 

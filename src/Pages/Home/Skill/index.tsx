@@ -112,7 +112,7 @@ const Skills: React.FC = () => {
         {
             icon: SiJavascript,
             title: "JavaScript",
-            description: "É uma linguagem de programação versátil para desenvolvimento web.",
+            description: "Linguagem de programação versátil para desenvolvimento web.",
             tipo: "Frontend",
         },
         {

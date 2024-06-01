@@ -1,8 +1,7 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import Header from '../Header';
 import Footer from '../Footer';
-import { Box, VStack, Spinner, Center, Text, Modal, ModalOverlay, ModalContent, ModalBody, ModalHeader, Flex } from '@chakra-ui/react';
-import useTokenExpiration from '../../../Hooks/useTokenExpiration';
+import { Box, VStack, Spinner, Center, Text, Modal, ModalOverlay, ModalContent, ModalBody, Flex } from '@chakra-ui/react';
 
 interface MasterPageProps {
     children: ReactNode;

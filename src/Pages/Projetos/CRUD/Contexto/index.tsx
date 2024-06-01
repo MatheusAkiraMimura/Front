@@ -5,9 +5,7 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  SetFunction,
-} from "../../../../Interfaces";
+import { SetFunction } from "../../../../Interfaces";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useSpring, animated } from "react-spring";
 
@@ -78,32 +76,32 @@ interface FormState {
 }
 
 interface DadosTabelaFormatadosAPICrud {
-    nome: { dados: string };
-    email: { dados: string };
-    data_campo: { dados: string };
-    celular: { dados: string };
-    classificacao: { dados: string };
-    observacao: { dados: string };
-    conhecimentos: { dados: string };
-    nivel: { dados: string };
-    botoesAlterarDeletar: {
-        id: number,
-    }
+  nome: { dados: string };
+  email: { dados: string };
+  data_campo: { dados: string };
+  celular: { dados: string };
+  classificacao: { dados: string };
+  observacao: { dados: string };
+  conhecimentos: { dados: string };
+  nivel: { dados: string };
+  botoesAlterarDeletar: {
+    id: number;
+  };
 }
 
 interface IDadosAPICrud {
-    id: number;
-    nome: string;
-    email: string;
-    data_campo: string;
-    celular: string;
-    classificacao: string;
-    observacao: string;
-    conhecimentos: string;
-    nivel: string;
-    userId: number;
+  identificadorUser: any;
+  id: number;
+  nome: string;
+  email: string;
+  data_campo: string;
+  celular: string;
+  classificacao: string;
+  observacao: string;
+  conhecimentos: string;
+  nivel: string;
+  userId: number;
 }
-
 
 interface INavegacaoCrud {
   setForms: SetFunction<FormState>;
@@ -254,22 +252,24 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
   const tratarDadosAPICrud = (
     dadosApi: IDadosAPICrud[]
   ): DadosTabelaFormatadosAPICrud[] => {
-    return dadosApi.map((item) => ({
-      id: { dados: item.id },
-      nome: { dados: item.nome },
-      email: { dados: item.email },
-      data_campo: {
-        dados: new Date(item.data_campo).toLocaleDateString("pt-BR"),
-      },
-      celular: { dados: item.celular },
-      classificacao: { dados: item.classificacao },
-      observacao: { dados: item.observacao },
-      conhecimentos: { dados: item.conhecimentos },
-      nivel: { dados: item.nivel },
-      botoesAlterarDeletar: {
-        id: item.id,
-      },
-    }));
+    return dadosApi
+      .filter((item) => item.identificadorUser === savedIdentifier)
+      .map((item) => ({
+        id: { dados: item.id },
+        nome: { dados: item.nome },
+        email: { dados: item.email },
+        data_campo: {
+          dados: new Date(item.data_campo).toLocaleDateString("pt-BR"),
+        },
+        celular: { dados: item.celular },
+        classificacao: { dados: item.classificacao },
+        observacao: { dados: item.observacao },
+        conhecimentos: { dados: item.conhecimentos },
+        nivel: { dados: item.nivel },
+        botoesAlterarDeletar: {
+          id: item.id,
+        },
+      }));
   };
 
   //#endregion
@@ -283,16 +283,22 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const dadosApi = await BDGetByCrudId(id);
 
-      setForms({
-        nome: dadosApi.nome,
-        email: dadosApi.email,
-        data_campo: new Date(dadosApi.data_campo).toISOString().split("T")[0],
-        celular: dadosApi.celular,
-        classificacao: dadosApi.classificacao,
-        observacao: dadosApi.observacao,
-        conhecimentos: dadosApi.conhecimentos.split(","),
-        nivel: dadosApi.nivel,
-      });
+      const dadosTratados = dadosApi.data;
+
+      if (dadosTratados) {
+        setForms({
+          nome: dadosTratados.nome,
+          email: dadosTratados.email,
+          data_campo: new Date(dadosApi.data.data_campo)
+            .toISOString()
+            .split("T")[0],
+          celular: dadosTratados.celular,
+          classificacao: dadosTratados.classificacao,
+          observacao: dadosTratados.observacao,
+          conhecimentos: dadosTratados.conhecimentos.split(","),
+          nivel: dadosTratados.nivel,
+        });
+      }
 
       setIsFormModalOpen(true);
     } catch (error: any) {
@@ -346,6 +352,8 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
   ) => {
     setShowModal(true);
     try {
+      values.identificadorUser = savedIdentifier;
+
       if (Array.isArray(values.conhecimentos)) {
         values.conhecimentos = values.conhecimentos.join(",");
       }
@@ -412,7 +420,12 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
   ) => {
     try {
       const dadosApi = await BDGetAllCRUDuserId();
-      setDadosTabela(tratarDadosAPICrud(dadosApi));
+
+      if (dadosApi.data.length > 0) {
+        setDadosTabela(tratarDadosAPICrud(dadosApi.data));
+      } else {
+        setDadosTabela([]);
+      }
 
       setForms({
         nome: "",
@@ -427,6 +440,7 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
 
       setRecarregarTabela(false);
     } catch (error: any) {
+      console.log(error);
       const errorMessage =
         error.response && error.response.data && error.response.data.message
           ? error.response.data.message
@@ -449,6 +463,14 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsFormModalOpen,
     setModalMode,
   }) => {
+    const [userName, setUserName] = useState("");
+
+    useEffect(() => {
+      if (savedIdentifier) {
+        const [savedName] = savedIdentifier.split("-");
+        setUserName(savedName);
+      }
+    }, []);
     return (
       <NavEntreProjetos
         rota="projetos"
@@ -460,6 +482,9 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
           <Text display={{ base: "none", md: "block" }}>
             Create Read Update Delete
           </Text>
+
+          <Text fontSize="1.6rem" align="center" >{userName}</Text>
+
           <Text display={{ base: "block", md: "none" }}>CRUD</Text>
         </Heading>
 
@@ -818,14 +843,13 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsFormModalOpen,
     setModalMode,
     setRecarregarTabela,
-    setTerminouEnviar
-
+    setTerminouEnviar,
   }) => {
     const { colorMode } = useColorMode();
-    
+
     const [dadosTabela, setDadosTabela] = useState<
-    DadosTabelaFormatadosAPICrud[]
-  >([]);
+      DadosTabelaFormatadosAPICrud[]
+    >([]);
 
     const [termoPesquisa, setTermoPesquisa] = useState("");
     const [isInputVisible, setIsInputVisible] = useState(false);
@@ -857,6 +881,7 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const indexDoUltimoItem = paginaAtual * itensPorPagina;
     const indexDoPrimeiroItem = indexDoUltimoItem - itensPorPagina;
+
     const itensAtuais = dadosFiltrados.slice(
       indexDoPrimeiroItem,
       indexDoUltimoItem
@@ -893,12 +918,12 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     useEffect(() => {
-        return () => {
-          if (closeTimer.current) {
-            clearTimeout(closeTimer.current as NodeJS.Timeout);
-          }
-        };
-      }, []);
+      return () => {
+        if (closeTimer.current) {
+          clearTimeout(closeTimer.current as NodeJS.Timeout);
+        }
+      };
+    }, []);
 
     useEffect(() => {
       if (dadosFiltrados.length > 0 && paginaAtual != 1) {
@@ -907,20 +932,20 @@ export const CRUDProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [termoPesquisa, dadosFiltrados.length]);
 
     useEffect(() => {
-        buscarAllDadosCrudByUser(setDadosTabela, setForms, setRecarregarTabela);
-      }, []);
-    
-      useEffect(() => {
-        if (recarregarTabela) {
-          buscarAllDadosCrudByUser(setDadosTabela, setForms, setRecarregarTabela);
-    
-          setTerminouEnviar(true);
-        }
-      }, [recarregarTabela]);
+      buscarAllDadosCrudByUser(setDadosTabela, setForms, setRecarregarTabela);
+    }, []);
 
-      useEffect(() => {
-        setRecarregarTabela(true)
-      }, [colorMode]);
+    useEffect(() => {
+      if (recarregarTabela) {
+        buscarAllDadosCrudByUser(setDadosTabela, setForms, setRecarregarTabela);
+
+        setTerminouEnviar(true);
+      }
+    }, [recarregarTabela]);
+
+    useEffect(() => {
+      setRecarregarTabela(true);
+    }, [colorMode]);
 
     return (
       <Box w="100%" maxW="98rem" margin="1rem auto">

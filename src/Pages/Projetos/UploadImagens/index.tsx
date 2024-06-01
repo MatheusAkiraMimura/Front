@@ -20,7 +20,9 @@ import {
   StepSeparator,
   useToast,
   Heading,
+  IconButton,
 } from "@chakra-ui/react";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import getCroppedImg from "./croppedImg"; // Função auxiliar para realizar o corte
 import MasterPage from "../../../Components/Layout/Master";
 import {
@@ -38,10 +40,7 @@ interface Imagem {
 }
 
 const UploadImageComponent = () => {
-  // Toast (Alert)
   const toast = useToast();
-
-  // UseStates
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -54,14 +53,15 @@ const UploadImageComponent = () => {
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
   const [activeStep, setActiveStep] = useState(0);
   const [salvouImagem, setSalvouImagem] = useState(true);
-  const [imagens, setImagens] = React.useState<Imagem[]>([]);
+  const [imagens, setImagens] = useState<Imagem[]>([]);
   const [showModal, setShowModal] = useState(false);
-
   const [userName, setUserName] = useState("");
+
 
 
   // Responsividade
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const stepDirection = useBreakpointValue<"horizontal" | "vertical">({ base: "vertical", md: "horizontal" });
 
   // Fator de ajuste de zoom
   const zoomFactor = 0.1;
@@ -79,16 +79,13 @@ const UploadImageComponent = () => {
     { title: "Salvar Imagem", description: "Salve a imagem editada" },
   ];
 
-  // LocalStorage
   const savedIdentifier = localStorage.getItem("userIdentifier");
 
-  // Consts que controlam o upload e recorte da imagem
   const onDrop = useCallback((acceptedFiles: any) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
     reader.addEventListener("load", () => setImageSrc(reader.result as string));
     reader.readAsDataURL(file);
-
     setActiveStep(1);
   }, []);
 
@@ -113,7 +110,6 @@ const UploadImageComponent = () => {
     try {
       const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
       setCroppedImage(croppedImage);
-
       setActiveStep(2);
     } catch (e) {
       console.error(e);
@@ -122,16 +118,10 @@ const UploadImageComponent = () => {
 
   const handleZoomChange = (newZoom: number) => {
     const adjustedZoom = zoom + (newZoom - zoom) * zoomFactor;
-
-    // Calcular o ponto central atual do corte
     const centerX = crop.x + (400 * zoom) / 2;
     const centerY = crop.y + (400 * zoom) / 2;
-
-    // Calcular o novo ponto central após o zoom
     const newCenterX = centerX * (adjustedZoom / zoom);
     const newCenterY = centerY * (adjustedZoom / zoom);
-
-    // Calcular as novas coordenadas de corte
     const newCropX = newCenterX - (400 * adjustedZoom) / 2;
     const newCropY = newCenterY - (400 * adjustedZoom) / 2;
 
@@ -139,13 +129,11 @@ const UploadImageComponent = () => {
     setZoom(adjustedZoom);
   };
 
-  // Consts que se comunicam com o BD
   const salvarImagem = async () => {
     try {
       if (!savedIdentifier) {
         throw new Error("Identificador do usuário não está presente");
       }
-
       const response = await BDUploadImagem(croppedImage, savedIdentifier);
 
       toast({
@@ -184,9 +172,7 @@ const UploadImageComponent = () => {
   const onExcluir = async (imagemId: any) => {
     try {
       await BDDeleteImagem(imagemId);
-
       setImagens(imagens.filter((imagem) => imagem.id !== imagemId));
-
       toast({
         title: "Imagem apagada",
         description: `A imagem foi deletada com sucesso!`,
@@ -198,7 +184,6 @@ const UploadImageComponent = () => {
     } catch (error: any) {
       const errorMessage =
         error.data || "Erro desconhecido ao buscar imagens BD.";
-
       toast({
         title: "Erro ao apagar imagem.",
         description: errorMessage,
@@ -210,12 +195,10 @@ const UploadImageComponent = () => {
     }
   };
 
-  // UseEffect
   useEffect(() => {
     const buscarImagensBD = async () => {
       try {
         const dadosApi = await BDImagens();
-
         if (dadosApi.data) {
           setImagens(dadosApi.data);
         }
@@ -223,7 +206,6 @@ const UploadImageComponent = () => {
         console.log(error);
         const errorMessage =
           error.response?.data || "Erro desconhecido ao buscar imagens BD.";
-
         toast({
           title: "Erro ao buscar imagens BD.",
           description: errorMessage,
@@ -248,6 +230,8 @@ const UploadImageComponent = () => {
     }
   }, []);
 
+
+
   return (
     <MasterPage
       paginaAtual="projetos"
@@ -261,8 +245,11 @@ const UploadImageComponent = () => {
           textoButton="Projetos"
         >
           <Heading ml={8} size="lg">
-            Upload de Imagens de {userName}
+            Upload e Delete de Imagens
+            <Text fontSize="1.6rem" align="center" >{userName}</Text>
           </Heading>
+
+     
         </NavEntreProjetos>
 
         <Box
@@ -273,7 +260,7 @@ const UploadImageComponent = () => {
           maxW="50rem"
           m="3rem auto"
         >
-          <Stepper index={activeStep}>
+          <Stepper index={activeStep} orientation={stepDirection}>
             {steps.map((step, index) => (
               <Step
                 key={index}
@@ -292,7 +279,7 @@ const UploadImageComponent = () => {
                   }
                 }}
               >
-                <StepIndicator>
+                <StepIndicator style={{ cursor: "pointer" }}>
                   <StepStatus
                     complete={<StepIcon />}
                     incomplete={<StepNumber />}
@@ -395,6 +382,7 @@ const UploadImageComponent = () => {
 
         <Box p={4} maxW="75rem" m="0 auto" mt={10}>
           <TabelaImagens imagens={imagens} onExcluir={onExcluir} />
+          
         </Box>
       </>
     </MasterPage>

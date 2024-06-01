@@ -46,9 +46,9 @@ const ProjectPage = () => {
     },
     {
       id: 3,
-      titulo: "Projeto Gamma",
+      titulo: "Projeto Gamma Administrativo",
       dificuldade: "Difícil",
-      descricao: "Saiba mais",
+      descricao: "Sistema administrativo de Centro médico",
       imageUrl: cmcImage,
       link: "/projetos/",
     },

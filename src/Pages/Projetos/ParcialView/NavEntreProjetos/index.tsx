@@ -21,7 +21,7 @@ const NavEntreProjetos = ({ rota, textoIconButton, textoButton, children, botaoD
     const bgColor = useColorModeValue("gray.300", "gray.500");
 
     return (
-        <Box p="2rem 4rem" w="100%" m="0 auto 1rem auto" bgColor={bgColor}>
+        <Box p={{base: "2rem 2rem", sm: "2rem 4rem"}} w="100%" m="0 auto 1rem auto" bgColor={bgColor}>
             <Flex align="center" justifyContent={{base: "space-around", lg: "space-between"}} maxW="80rem" m="0 auto">
                 <Tooltip label={textoIconButton} aria-label="Dica de navegação">
                     <Button
