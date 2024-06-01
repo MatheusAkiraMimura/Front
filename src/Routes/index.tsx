@@ -8,6 +8,7 @@ import ProjetoCRUD from "../Pages/Projetos/CRUD";
 import { CRUDProvider } from "../Pages/Projetos/CRUD/Contexto";
 import { ContatoProvider } from "../Pages/Contato/Contexto";
 import { HomeProvider } from "../Pages/Home/Context";
+import { UploadImagensProvider } from "../Pages/Projetos/UploadImagens/Context";
 
 const AppRoutes = () => {
   return (
@@ -33,7 +34,14 @@ const AppRoutes = () => {
 
         <Route path="/projetos" element={<Projetos />} />
 
-        <Route path="/projetos/upload" element={<UploadImageComponent />} />
+        <Route
+          path="/projetos/upload"
+          element={
+            <UploadImagensProvider>
+              <UploadImageComponent />
+            </UploadImagensProvider>
+          }
+        />
 
         <Route
           path="/projetos/crud"
