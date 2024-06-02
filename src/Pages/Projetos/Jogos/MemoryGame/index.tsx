@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Box,
   Button,
@@ -7,14 +7,15 @@ import {
   Image,
   Progress,
   SimpleGrid,
+  Spinner,
   Text,
+  VStack,
   useBreakpointValue,
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
 import MasterPage from "../../../../Components/Layout/Master";
-import NavEntreProjetos from "../../ParcialView/NavEntreProjetos";
-import TipoDeJogoMemoria from "./ParcialView/TipoDeJogo";
+import NavEntreProjetos from "../../../../Components/NavEntreProjetos";
 
 // Imagens
 import terrestre1 from "./Assets/Terrestres/1.png";
@@ -49,6 +50,7 @@ import marinho7 from "./Assets/Marinho/7.png";
 import marinho8 from "./Assets/Marinho/8.png";
 import marinho9 from "./Assets/Marinho/9.png";
 import marinho10 from "./Assets/Marinho/10.png";
+import { MemoryGameContext } from "./Context";
 
 type Card = {
   id: number;
@@ -399,11 +401,31 @@ const MemoryGame = () => {
     }
   };
 
+  const breakPointGrid = useBreakpointValue({ base: 3, md: 4 })
+
   useEffect(() => {
     if (tipoJogo !== "") {
       resetGame(tipoJogo);
     }
   }, [tipoJogo]);
+
+
+    // Contexto
+    const contexto = useContext(MemoryGameContext);
+    if (!contexto) {
+      return (
+        <VStack>
+          <Spinner style={{ width: "105px", height: "105px" }} color="blue.500" />
+          <Text mt={3} fontSize="xl">
+            Carregando...
+          </Text>
+        </VStack>
+      );
+    }
+  
+    const {
+      TipoDeJogoMemoria,
+    } = contexto;
 
   return (
     <MasterPage
@@ -439,7 +461,7 @@ const MemoryGame = () => {
       >
         <Box pr={4}>
           <SimpleGrid
-            columns={useBreakpointValue({ base: 3, md: 4 })}
+            columns={breakPointGrid}
             spacing={5}
             justifyItems="center"
           >
@@ -533,6 +555,7 @@ const MemoryGame = () => {
             Reiniciar Jogo
           </Button>
         </Box>
+        
       </Grid>
     </MasterPage>
   );

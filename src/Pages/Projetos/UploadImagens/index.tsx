@@ -31,7 +31,7 @@ import {
   BDImagens,
   BDUploadImagem,
 } from "../../../Api/bancoDados";
-import NavEntreProjetos from "../ParcialView/NavEntreProjetos";
+import NavEntreProjetos from "../../../Components/NavEntreProjetos";
 import { UploadImagensContext } from "./Context";
 
 interface Imagem {

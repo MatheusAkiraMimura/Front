@@ -1,75 +1,28 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Flex,
   useColorModeValue,
   Box,
+  VStack,
+  Spinner,
+  Text,
 } from "@chakra-ui/react";
 import MasterPage from "../../Components/Layout/Master";
-import ProjectsGrid from "./ParcialView/Projeto";
-import cmcImage from "./Assets/cmc.png";
-import memoriaGame from "./Assets/memoria.png";
-import projectUpload from "./Assets/projectUpload.png";
-import crud from "./Assets/CRUD.png";
 
-import { useNavigate } from "react-router-dom";
+
 import { ITiposOpcoes } from "../../Interfaces";
 import MenuOpcoes from "../../Components/MenuOpcoes";
 import { BsStarFill } from "react-icons/bs";
+import { ProjetosContext } from "./Context";
 
 const ProjectPage = () => {
-  const initialProjects = [
-    {
-      id: 1,
-      titulo: "Jogo da memória",
-      dificuldade: "Fácil",
-      descricao: "Jogo de memória feito com React, Typescript e Chakra UI",
-      imageUrl: memoriaGame,
-      link: "/projetos/jogos/memoria",
-    },
-    {
-      id: 2,
-      titulo: "Upload e corte de imagem",
-      dificuldade: "Fácil",
-      descricao:
-        "Sistema de upload e corte de imagens utilizando o react-dropzone e react-easy-crop",
-      imageUrl: projectUpload,
-      link: "/projetos/upload",
-    },
-    {
-      id: 3,
-      titulo: "Projeto Gamma Administrativo",
-      dificuldade: "Difícil",
-      descricao: "Sistema administrativo de Centro médico",
-      imageUrl: cmcImage,
-      link: "/projetos/",
-    },
-    {
-      id: 4,
-      titulo: "CRUD",
-      dificuldade: "Médio",
-      descricao: "Sistema de gerenciamento de dados via Modals",
-      imageUrl: crud,
-      link: "/projetos/crud",
-    },
-  ];
-
-  const [projects] = useState(initialProjects);
-  const [difficulty, setDifficulty] = useState("Médio");
-
-  const filteredProjects = projects.filter((project) => {
-    return project.dificuldade.includes(difficulty);
-  });
-
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-
-  const clicarSaibaMais = (path: any) => {
-    navigate(path);
-  };
-
+  
   const handleDifficultySelect = (selectedDifficulty: any) => {
     setDifficulty(selectedDifficulty);
   };
+
+  const [difficulty, setDifficulty] = useState("Médio");
 
   const bgGradientEasy = useColorModeValue(
     "linear-gradient(to right, #00c855, #008b46)",
@@ -116,6 +69,22 @@ const ProjectPage = () => {
 
   const bgColor = useColorModeValue("gray.300", "gray.500");
 
+    // Contexto
+    const contexto = useContext(ProjetosContext);
+    if (!contexto) {
+      return (
+        <VStack>
+          <Spinner style={{ width: "105px", height: "105px" }} color="blue.500" />
+          <Text mt={3} fontSize="xl">
+            Carregando...
+          </Text>
+        </VStack>
+      );
+    }
+  
+    const {
+      ProjectsGrid
+    } = contexto;
   return (
     <MasterPage
       paginaAtual="projetos"
@@ -134,8 +103,7 @@ const ProjectPage = () => {
       </Box>
 
       <ProjectsGrid
-        projetos={filteredProjects}
-        clicarSaibaMais={clicarSaibaMais}
+        difficulty={difficulty}
       />
     </MasterPage>
   );

@@ -49,7 +49,7 @@ import {
   BDGetByCrudId,
   BDUpdateByCrudId,
 } from "../../../../Api/bancoDados";
-import NavEntreProjetos from "../../ParcialView/NavEntreProjetos";
+import NavEntreProjetos from "../../../../Components/NavEntreProjetos";
 import { FaPlus, FaSearch, FaTimes } from "react-icons/fa";
 import { Field, Form, Formik, FormikProps } from "formik";
 // Yup for validation

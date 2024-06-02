@@ -9,6 +9,10 @@ import { CRUDProvider } from "../Pages/Projetos/CRUD/Contexto";
 import { ContatoProvider } from "../Pages/Contato/Contexto";
 import { HomeProvider } from "../Pages/Home/Context";
 import { UploadImagensProvider } from "../Pages/Projetos/UploadImagens/Context";
+import { ProjetosProvider } from "../Pages/Projetos/Context";
+import { MemoryGameProvider } from "../Pages/Projetos/Jogos/MemoryGame/Context";
+import { CandidateProvider } from "../Pages/Projetos/Candidatos/Context/indext";
+import CandidatePage from "../Pages/Projetos/Candidatos";
 
 const AppRoutes = () => {
   return (
@@ -32,7 +36,14 @@ const AppRoutes = () => {
           }
         />
 
-        <Route path="/projetos" element={<Projetos />} />
+        <Route
+          path="/projetos"
+          element={
+            <ProjetosProvider>
+              <Projetos />
+            </ProjetosProvider>
+          }
+        />
 
         <Route
           path="/projetos/upload"
@@ -52,7 +63,23 @@ const AppRoutes = () => {
           }
         />
 
-        <Route path="/projetos/jogos/memoria" element={<MemoryGame />} />
+        <Route
+          path="/projetos/Candidatos"
+          element={
+            <CandidateProvider>
+              <CandidatePage />
+            </CandidateProvider>
+          }
+        />
+
+        <Route
+          path="/projetos/jogos/memoria"
+          element={
+            <MemoryGameProvider>
+              <MemoryGame />
+            </MemoryGameProvider>
+          }
+        />
       </Routes>
     </Router>
   );

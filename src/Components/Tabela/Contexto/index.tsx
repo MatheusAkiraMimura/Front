@@ -1,10 +1,6 @@
 import { FunctionComponent, createContext, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
-import {
-  Coluna,
-  IRetornoBotoesAlterarDeletar,
-  IRetornoPadraoTabela,
-} from "../../../Interfaces";
+
 import {
   Flex,
   IconButton,
@@ -18,8 +14,19 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { Coluna } from "../../../Interfaces/tabela";
 
 //#region Interfaces
+interface IRetornoPadraoTabela {
+  dados: any;
+}
+
+interface IRetornoBotoesAlterarDeletar {
+  id: string;
+  abriModalAlterar?: (idSelecionado: any) => void; 
+  abrirModalDeletar?: (idSelecionado: any) => void; 
+}
+
 interface TabelaCabecalhoProps {
   colunas: Coluna[];
 }
@@ -82,6 +89,7 @@ export const TabelaCustomizadaProvider: React.FC<{
     abriModalAlterar?: (idSelecionado: any) => void,
     abrirModalDeletar?: (idSelecionado: any) => void
   ) => {
+    
     const RenderizarPadraoTabela = ({ dados }: IRetornoPadraoTabela) => (
       <>{dados}</>
     );

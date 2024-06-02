@@ -12,9 +12,9 @@ import {
   VStack,
   Spinner,
 } from "@chakra-ui/react";
-import { Coluna } from "../../Interfaces";
 import { NavigateFunction } from "react-router-dom";
 import { TabelaCustomizadaContext, TabelaCustomizadaProvider } from "./Contexto";
+import { Coluna } from "../../Interfaces/tabela";
 
 interface TabelaCustomizadaProps {
   colunas: Coluna[];
